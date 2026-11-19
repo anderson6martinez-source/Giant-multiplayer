@@ -175,7 +175,7 @@ namespace Game
                 if (particulas != null)
                 {
                     Vector3 sobreLaCabeza = otro.ComponentBody.Position + new Vector3(0f, otro.ComponentBody.BoxSize.Y + 0.3f, 0f);
-                    particulas.AddParticleSystem(new CorazonParticleSystem(sobreLaCabeza), false);
+                    particulas.AddParticleSystem(new CorazonParticleSystem(sobreLaCabeza));
                 }
             }
         }

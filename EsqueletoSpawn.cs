@@ -355,9 +355,9 @@ namespace GiganteCode
 
                 suscritos.Add(criatura.Entity);
                 ComponentCreature victima = criatura;
-                // OJO: en 2.4 ComponentHealth.Attacked ya no se dispara nunca. El evento real (el mismo que usan
-                // ChaseBehavior y HerdBehavior del juego) es ComponentHealth.Injured, que trae el Injury con el agresor.
-                criatura.ComponentHealth.Injured += (Injury lesion) => AlSerAtacado(victima, lesion.Attacker);
+                // OJO: en SCNET 2.4 multijugador no existe Injured/Injury. El evento es ComponentHealth.Attacked
+                // (Action<ComponentCreature> con el agresor); lo lanza NetInjure, que Injure() siempre llama.
+                criatura.ComponentHealth.Attacked += (ComponentCreature atacante) => AlSerAtacado(victima, atacante);
             }
 
             // 2) los indigenas buscan gigantes (todos menos el muerto y el mutante) y los atacan
