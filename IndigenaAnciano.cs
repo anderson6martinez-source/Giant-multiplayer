@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using Engine;
 using GameEntitySystem;
+using GiganteCode;
 
 namespace Game
 {
@@ -153,9 +154,10 @@ namespace Game
                 if (suscritos.Add(anciano.Entity))
                 {
                     ComponentCreature yo = anciano;
-                    anciano.ComponentHealth.Injured += (Injury lesion) =>
+                    // SCNET 2.4 no tiene Injured/Injury: el evento equivalente es Attacked (recibe al atacante)
+                    anciano.ComponentHealth.Attacked += (ComponentCreature atacante) =>
                     {
-                        if (tiempo != null && EsJugador(lesion.Attacker))
+                        if (tiempo != null && EsJugador(atacante))
                             provocado[yo] = tiempo.GameTime + PermisoDefensa;
                     };
                 }
