@@ -1,0 +1,52 @@
+name: Build GiganteCode (2.4 multijugador)
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Crear GiganteCode.csproj si no existe
+        run: |
+          if ls *.csproj >/dev/null 2>&1; then
+            echo "Ya hay csproj, se usa el tuyo"
+          else
+            cat > GiganteCode.csproj <<'EOF'
+          <Project Sdk="Microsoft.NET.Sdk">
+            <PropertyGroup>
+              <TargetFramework>netstandard2.0</TargetFramework>
+              <AssemblyName>GiganteCode</AssemblyName>
+              <RootNamespace>Game</RootNamespace>
+              <LangVersion>latest</LangVersion>
+              <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+              <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+              <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+              <NoWarn>CS0436;CS0108;CS0114;CS0168;CS0219;CS0649;CS0169</NoWarn>
+            </PropertyGroup>
+            <ItemGroup>
+              <Compile Include="**/*.cs" Exclude="obj/**;bin/**" />
+              <Reference Include="Engine"><HintPath>libs/mp24/Engine.dll</HintPath><Private>false</Private></Reference>
+              <Reference Include="EntitySystem"><HintPath>libs/mp24/EntitySystem.dll</HintPath><Private>false</Private></Reference>
+              <Reference Include="Survivalcraft"><HintPath>libs/mp24/Survivalcraft.dll</HintPath><Private>false</Private></Reference>
+              <Reference Include="LiteNetLib"><HintPath>libs/mp24/LiteNetLib.dll</HintPath><Private>false</Private></Reference>
+              <Reference Include="MessagePack"><HintPath>libs/mp24/MessagePack.dll</HintPath><Private>false</Private></Reference>
+            </ItemGroup>
+          </Project>
+          EOF
+          fi
+
+      - name: Compilar
+        run: dotnet build -c Release -o out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: GiganteCode
+          path: out/GiganteCode.dll
